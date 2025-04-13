@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hausbetriebskosten</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #f0f0f0;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 90vw;
+            max-width: 400px;
+            position: relative;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        body.dark-mode .container {
+            background: #2a2a2a;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0.5rem 0 1.5rem 0;
+            text-align: center;
+            transition: color 0.3s ease;
+            letter-spacing: 0.05rem;
+        }
+
+        body.dark-mode .header {
+            color: #f0f0f0;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 50px;
+            height: 25px;
+            background: #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0 2px;
+            box-sizing: border-box;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle.dark-mode {
+            background: #444;
+        }
+
+        .slider {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle.dark-mode .slider {
+            transform: translateX(26px);
+        }
+
+        .input-frame {
+            position: relative;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 1rem;
+            background: #fafafa;
+            margin-bottom: 0.75rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.dark-mode .input-frame {
+            background: #333;
+            border-color: #555;
+        }
+
+        .input-frame-title {
+            position: absolute;
+            top: -0.6rem;
+            left: 0.5rem;
+            background: #fafafa;
+            padding: 0 0.3rem;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode .input-frame-title {
+            background: #333;
+            color: #f0f0f0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .input-container {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #333;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode label {
+            color: #f0f0f0;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: #ffffff;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        body.dark-mode input[type="text"], body.dark-mode select {
+            background: #444;
+            border-color: #666;
+            color: #f0f0f0;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+            outline: none;
+        }
+
+        input.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 6px rgba(220, 53, 69, 0.3);
+        }
+
+        .error-message {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        body.dark-mode .error-message {
+            background: #721c24;
+            color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .dropdown-container, .checkbox-container {
+            margin-bottom: 0.75rem;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 0.3rem;
+        }
+
+        button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(52, 152, 219, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            padding: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .accordion {
+            margin-top: 0.75rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+            display: none;
+        }
+
+        body.dark-mode .accordion {
+            border-color: #555;
+        }
+
+        .accordion.visible {
+            display: block;
+        }
+
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f0f0f0;
+            padding: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode .accordion-header {
+            background: #3a3a3a;
+            color: #f0f0f0;
+        }
+
+        .accordion-header:hover {
+            background: #e0e0e0;
+        }
+
+        body.dark-mode .accordion-header:hover {
+            background: #4a4a4a;
+        }
+
+        .header-label {
+            text-align: left;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-value {
+            text-align: right;
+            padding-left: 0.3rem;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 0.5rem;
+            background: #fafafa;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        body.dark-mode .accordion-content {
+            background: #333;
+        }
+
+        .accordion-content.open {
+            max-height: 450px;
+            padding: 0.5rem;
+        }
+
+        .accordion-content p {
+            margin: 0.3rem 0;
+            font-size: 0.95rem;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .accordion-content p {
+            color: #f0f0f0;
+        }
+
+        .nested-accordion {
+            margin: 0.5rem 0;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        body.dark-mode .nested-accordion {
+            border-color: #666;
+        }
+
+        .nested-accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e8e8e8;
+            padding: 0.4rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode .nested-accordion-header {
+            background: #444;
+            color: #f0f0f0;
+        }
+
+        .nested-accordion-header:hover {
+            background: #d8d8d8;
+        }
+
+        body.dark-mode .nested-accordion-header:hover {
+            background: #555;
+        }
+
+        .nested-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 0.4rem;
+            background: #f5f5f5;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        body.dark-mode .nested-accordion-content {
+            background: #3a3a3a;
+        }
+
+        .nested-accordion-content.open {
+            max-height: 250px;
+            padding: 0.4rem;
+        }
+
+        .nested-accordion-content p {
+            margin: 0.3rem 0;
+            font-size: 0.95rem;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .nested-accordion-content p {
+            color: #f0f0f0;
+        }
+
+        .sub-nested-accordion {
+            margin: 0.4rem 0;
+            border: 1px solid #c0c0c0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        body.dark-mode .sub-nested-accordion {
+            border-color: #777;
+        }
+
+        .sub-nested-accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f0f0f0;
+            padding: 0.3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode .sub-nested-accordion-header {
+            background: #4a4a4a;
+            color: #f0f0f0;
+        }
+
+        .sub-nested-accordion-header:hover {
+            background: #e0e0e0;
+        }
+
+        body.dark-mode .sub-nested-accordion-header:hover {
+            background: #5a5a5a;
+        }
+
+        .sub-nested-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 0.3rem;
+            background: #fafafa;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        body.dark-mode .sub-nested-accordion-content {
+            background: #3f3f3f;
+        }
+
+        .sub-nested-accordion-content.open {
+            max-height: 200px;
+            padding: 0.3rem;
+        }
+
+        .sub-nested-accordion-content p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .sub-nested-accordion-content p {
+            color: #f0f0f0;
+        }
+
+        .content-label {
+            text-align: left;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .content-value {
+            text-align: right;
+            padding-left: 0.3rem;
+        }
+
+        .accordion-content p:nth-child(odd),
+        .nested-accordion-content p:nth-child(odd),
+        .sub-nested-accordion-content p:nth-child(odd) {
+            background: #e6f0fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 2px;
+        }
+
+        .accordion-content p:nth-child(even),
+        .nested-accordion-content p:nth-child(even),
+        .sub-nested-accordion-content p:nth-child(even) {
+            background: #fafafa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 2px;
+        }
+
+        body.dark-mode .accordion-content p:nth-child(odd),
+        body.dark-mode .nested-accordion-content p:nth-child(odd),
+        body.dark-mode .sub-nested-accordion-content p:nth-child(odd) {
+            background: #2a4a6b;
+        }
+
+        body.dark-mode .accordion-content p:nth-child(even),
+        body.dark-mode .nested-accordion-content p:nth-child(even),
+        body.dark-mode .sub-nested-accordion-content p:nth-child(even) {
+            background: #3f3f3f;
+        }
+
+        .resultado-final {
+            margin-top: 0.75rem;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .resultado-final.positive {
+            color: #28a745;
+        }
+
+        .resultado-final.negative {
+            color: #dc3545;
+        }
+
+        body.dark-mode .resultado-final {
+            transition: color 0.3s ease;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            background: #ffffff;
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 360px;
+            width: 90%;
+            opacity: 0;
+            z-index: 1001;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        body.dark-mode .popup {
+            background: #2a2a2a;
+        }
+
+        .popup.visible {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            display: block;
+        }
+
+        .popup.fade-out {
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+        }
+
+        .popup-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        body.dark-mode .popup-title {
+            color: #f0f0f0;
+        }
+
+        .popup-content p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        body.dark-mode .popup-content p {
+            color: #f0f0f0;
+        }
+
+        .popup-content .label {
+            font-weight: 600;
+        }
+
+        .popup-content p:last-of-type:not(:only-child)::before {
+            content: '';
+            display: block;
+            height: 1rem;
+        }
+
+        .popup-close {
+            display: block;
+            margin: 0.5rem auto 0;
+            background: #dc3545;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .popup-close:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(200, 35, 51, 0.4);
+        }
+
+        .bar-chart {
+            width: 100%;
+            height: 100px;
+            margin: 0.5rem auto;
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            padding: 5px;
+            box-sizing: border-box;
+            justify-content: center;
+        }
+
+        body.dark-mode .bar-chart {
+            background: #333;
+            border-color: #555;
+        }
+
+        .bar {
+            flex: 0 0 16.67%;
+            max-width: 16.67%;
+            margin: 0 10px;
+            position: relative;
+            transition: height 0.3s ease;
+        }
+
+        .bar.my-consumption {
+            background: #3498db;
+            border: 1px solid #2980b9;
+        }
+
+        .bar.average {
+            background: #28a745;
+            border: 1px solid #218838;
+        }
+
+        .bar-label {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .bar-label {
+            color: #f0f0f0;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        body.dark-mode .legend {
+            color: #f0f0f0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 400px) {
+            .input-frame {
+                padding: 0.75rem;
+            }
+            .input-frame-title {
+                font-size: 0.9rem;
+            }
+            label {
+                font-size: 0.9rem;
+            }
+            input[type="text"], select {
+                font-size: 0.85rem;
+            }
+            button {
+                font-size: 0.9rem;
+            }
+            .header {
+                font-size: 1.5rem;
+            }
+            .accordion-header {
+                font-size: 0.9rem;
+            }
+            .accordion-content p {
+                font-size: 0.85rem;
+            }
+            .nested-accordion-header {
+                font-size: 0.85rem;
+            }
+            .nested-accordion-content p {
+                font-size: 0.8rem;
+            }
+            .sub-nested-accordion-header {
+                font-size: 0.8rem;
+            }
+            .sub-nested-accordion-content p {
+                font-size: 0.75rem;
+            }
+            .resultado-final {
+                font-size: 0.9rem;
+            }
+            .button-group button {
+                font-size: 0.8rem;
+                padding: 0.3rem;
+            }
+            .action-buttons button {
+                font-size: 0.8rem;
+                padding: 0.3rem;
+            }
+            .popup {
+                max-width: 320px;
+                padding: 1rem;
+            }
+            .popup-title {
+                font-size: 1rem;
+            }
+            .popup-content p {
+                font-size: 0.85rem;
+            }
+            .bar-chart {
+                height: 80px;
+            }
+            .bar {
+                flex: 0 0 14%;
+                max-width: 14%;
+                margin: 0 8px;
+            }
+            .bar-label {
+                font-size: 0.7rem;
+            }
+            .legend {
+                font-size: 0.7rem;
+            }
+            .error-message {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Hausbetriebskosten</div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <div class="slider">☀️</div>
+        </div>
+        <div class="input-frame">
+            <span class="input-frame-title">Wärmemengenzähler</span>
+            <div class="input-group">
+                <div class="input-container">
+                    <label for="warmemengenzahler-neu">Neuwert (kWh)</label>
+                    <input type="text" id="warmemengenzahler-neu" placeholder="">
+                </div>
+                <div class="input-container">
+                    <label for="warmemengenzahler-alt">Altwert (kWh)</label>
+                    <input type="text" id="warmemengenzahler-alt" placeholder="">
+                </div>
+            </div>
+        </div>
+        <div class="input-frame">
+            <span class="input-frame-title">Warmwasserverbrauch</span>
+            <div class="input-group">
+                <div class="input-container">
+                    <label for="warmwasser-verbrauch-neu">Neuwert (m³)</label>
+                    <input type="text" id="warmwasser-verbrauch-neu" placeholder="">
+                </div>
+                <div class="input-container">
+                    <label for="warmwasser-verbrauch-alt">Altwert (m³)</label>
+                    <input type="text" id="warmwasser-verbrauch-alt" placeholder="">
+                </div>
+            </div>
+        </div>
+        <div class="input-frame">
+            <span class="input-frame-title">Kaltwasserverbrauch</span>
+            <div class="input-group">
+                <div class="input-container">
+                    <label for="kaltwasser-verbrauch-neu">Neuwert (m³)</label>
+                    <input type="text" id="kaltwasser-verbrauch-neu" placeholder="">
+                </div>
+                <div class="input-container">
+                    <label for="kaltwasser-verbrauch-alt">Altwert (m³)</label>
+                    <input type="text" id="kaltwasser-verbrauch-alt" placeholder="">
+                </div>
+            </div>
+        </div>
+        <div class="input-frame">
+            <span class="input-frame-title">Vorauszahlungsbetrag</span>
+            <div class="input-group">
+                <div class="input-container">
+                    <label for="betriebskosten-vorauszahlungsbetrag">Monatlicher Betrag</label>
+                    <input type="text" id="betriebskosten-vorauszahlungsbetrag" placeholder="">
+                </div>
+            </div>
+        </div>
+        <div class="button-group">
+            <button onclick="preencherDados2023()">Preencher dados 2023</button>
+            <button onclick="preencherDados2024()">Preencher dados 2024</button>
+            <button onclick="preencherDados2025()">Preencher dados 2025</button>
+        </div>
+        <div class="dropdown-container">
+            <label for="metodo-estimativa">Método de Estimativa de Custo Variáveis</label>
+            <select id="metodo-estimativa">
+                <option value="media-3-anos">Média dos últimos 3 anos</option>
+                <option value="media-2-anos">Média dos últimos 2 anos</option>
+                <option value="maximo-3-anos">Máximo dos últimos 3 anos</option>
+                <option value="mesmo-ano-anterior">Mesmos valores do ano anterior</option>
+            </select>
+        </div>
+        <div class="checkbox-container">
+            <label>
+                <input type="checkbox" id="estimativa-12-meses"> Estimativa para 12 meses
+            </label>
+        </div>
+        <div class="action-buttons">
+            <button onclick="calcularCusto()">Calcular Custo</button>
+            <button onclick="limparDados()">Limpar Dados</button>
+            <button onclick="mostrarEstatistica()">Estatística de Consumo</button>
+        </div>
+        <div id="resultado"></div>
+    </div>
+
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup" id="estatistica-popup">
+            <div class="popup-title">Estatística de Consumo</div>
+            <div class="popup-content" id="popup-content"></div>
+            <button class="popup-close" onclick="fecharPopup()">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        let diferencaWarme = 0;
+        let somaWasserverbrauch = 0;
+
+        function formatNumber(value, isMonetary = false) {
+            let cleanValue = value.replace(/[^0-9.,]/g, '');
+            cleanValue = cleanValue.replace(',', '.');
+            const num = parseFloat(cleanValue);
+            if (isNaN(num)) return '0,000';
+            const decimals = isMonetary ? 2 : 3;
+            return num.toLocaleString('de-DE', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        }
+
+        function parseFormattedNumber(value) {
+            const cleanValue = value.replace(/\./g, '').replace(',', '.');
+            return parseFloat(cleanValue) || 0;
+        }
+
+        const warmemengenzahlerNeu = document.getElementById("warmemengenzahler-neu");
+        const warmemengenzahlerAlt = document.getElementById("warmemengenzahler-alt");
+        const warmwasserVerbrauchNeu = document.getElementById("warmwasser-verbrauch-neu");
+        const warmwasserVerbrauchAlt = document.getElementById("warmwasser-verbrauch-alt");
+        const kaltwasserVerbrauchNeu = document.getElementById("kaltwasser-verbrauch-neu");
+        const kaltwasserVerbrauchAlt = document.getElementById("kaltwasser-verbrauch-alt");
+        const betriebskostenVorauszahlungsbetrag = document.getElementById("betriebskosten-vorauszahlungsbetrag");
+        const metodoEstimativa = document.getElementById("metodo-estimativa");
+        const estimativa12Meses = document.getElementById("estimativa-12-meses");
+        const resultadoDiv = document.getElementById("resultado");
+
+        function handleDecimalInput(event) {
+            const input = event.target;
+            const value = input.value;
+            const decimalPart = value.split(/[\.,]/)[1];
+
+            if (decimalPart && decimalPart.length >= 3) {
+                if (input === warmemengenzahlerNeu) {
+                    warmemengenzahlerAlt.focus();
+                } else if (input === warmemengenzahlerAlt) {
+                    warmwasserVerbrauchNeu.focus();
+                } else if (input === warmwasserVerbrauchNeu) {
+                    warmwasserVerbrauchAlt.focus();
+                } else if (input === warmwasserVerbrauchAlt) {
+                    kaltwasserVerbrauchNeu.focus();
+                } else if (input === kaltwasserVerbrauchNeu) {
+                    kaltwasserVerbrauchAlt.focus();
+                } else if (input === kaltwasserVerbrauchAlt) {
+                    betriebskostenVorauszahlungsbetrag.focus();
+                }
+            }
+        }
+
+        function removeError(input) {
+            input.classList.remove('error');
+        }
+
+        const inputs = [warmemengenzahlerNeu, warmemengenzahlerAlt, warmwasserVerbrauchNeu, 
+                        warmwasserVerbrauchAlt, kaltwasserVerbrauchNeu, kaltwasserVerbrauchAlt, 
+                        betriebskostenVorauszahlungsbetrag];
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value) {
+                    const isMonetary = this.id === 'betriebskosten-vorauszahlungsbetrag';
+                    this.value = formatNumber(this.value, isMonetary);
+                }
+            });
+            input.addEventListener('input', handleDecimalInput);
+            input.addEventListener('input', () => removeError(input));
+        });
+
+        function preencherDados2023() {
+            warmemengenzahlerNeu.value = formatNumber("10119.800");
+            warmemengenzahlerAlt.value = formatNumber("9984.500");
+            warmwasserVerbrauchNeu.value = formatNumber("134.797");
+            warmwasserVerbrauchAlt.value = formatNumber("116.784");
+            kaltwasserVerbrauchNeu.value = formatNumber("252.264");
+            kaltwasserVerbrauchAlt.value = formatNumber("227.105");
+            betriebskostenVorauszahlungsbetrag.value = formatNumber("150", true);
+            metodoEstimativa.value = "mesmo-ano-anterior";
+            estimativa12Meses.checked = false;
+            inputs.forEach(input => input.classList.remove('error'));
+            resultadoDiv.innerHTML = '';
+        }
+
+        function preencherDados2024() {
+            warmemengenzahlerNeu.value = formatNumber("0");
+            warmemengenzahlerAlt.value = formatNumber("0");
+            warmwasserVerbrauchNeu.value = formatNumber("10.174");
+            warmwasserVerbrauchAlt.value = formatNumber("0");
+            kaltwasserVerbrauchNeu.value = formatNumber("17.109");
+            kaltwasserVerbrauchAlt.value = formatNumber("0");
+            betriebskostenVorauszahlungsbetrag.value = formatNumber("150", true);
+            metodoEstimativa.value = "mesmo-ano-anterior";
+            estimativa12Meses.checked = false;
+            inputs.forEach(input => input.classList.remove('error'));
+            resultadoDiv.innerHTML = '';
+        }
+
+        function preencherDados2025() {
+            warmemengenzahlerNeu.value = formatNumber("0");
+            warmemengenzahlerAlt.value = formatNumber("0");
+            warmwasserVerbrauchNeu.value = formatNumber("0");
+            warmwasserVerbrauchAlt.value = formatNumber("10.174");
+            kaltwasserVerbrauchNeu.value = formatNumber("0");
+            kaltwasserVerbrauchAlt.value = formatNumber("17.109");
+            betriebskostenVorauszahlungsbetrag.value = formatNumber("150", true);
+            metodoEstimativa.value = "mesmo-ano-anterior";
+            estimativa12Meses.checked = true;
+            inputs.forEach(input => input.classList.remove('error'));
+            resultadoDiv.innerHTML = '';
+        }
+
+        function limparDados() {
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('error');
+            });
+            metodoEstimativa.value = "media-3-anos";
+            estimativa12Meses.checked = false;
+            resultadoDiv.innerHTML = '';
+            diferencaWarme = 0;
+            somaWasserverbrauch = 0;
+            fecharPopup();
+        }
+
+        function mostrarEstatistica() {
+            const allFilled = inputs.every(input => input.value.trim() !== '');
+            if (!allFilled) {
+                alert("Por favor, preencha todos os campos antes de visualizar a estatística.");
+                return;
+            }
+
+            if (resultadoDiv.innerHTML === '') {
+                alert("Por favor, clique em 'Calcular Custo' antes de visualizar a estatística.");
+                return;
+            }
+
+            let content = `
+                <p><span class="label">Consumo de Aquecimento:</span> ${formatNumber(diferencaWarme.toString())} kWh</p>
+            `;
+            if (!estimativa12Meses.checked) {
+                const consumoMensalAquecimento = diferencaWarme / 12;
+                const consumoDiarioAquecimento = diferencaWarme / 365;
+                content += `
+                    <p><span class="label">Consumo Mensal:</span> ${formatNumber(consumoMensalAquecimento.toString())} kWh</p>
+                    <p><span class="label">Consumo Diário:</span> ${formatNumber(consumoDiarioAquecimento.toString())} kWh</p>
+                `;
+            }
+
+            content += `
+                <p><span class="label">Consumo Total d’água:</span> ${formatNumber(somaWasserverbrauch.toString())} m³</p>
+            `;
+            if (!estimativa12Meses.checked) {
+                const consumoMensalAgua = somaWasserverbrauch / 12;
+                const consumoDiarioAgua = somaWasserverbrauch / 365;
+                content += `
+                    <p><span class="label">Consumo Mensal:</span> ${formatNumber(consumoMensalAgua.toString())} m³</p>
+                    <p><span class="label">Consumo Diário:</span> ${formatNumber(consumoDiarioAgua.toString())} m³</p>
+                `;
+            }
+
+            const maxValue = Math.max(somaWasserverbrauch, 46.300);
+            const myConsumptionHeight = (somaWasserverbrauch / maxValue) * 80;
+            const averageHeight = (46.300 / maxValue) * 80;
+            content += `
+                <div class="bar-chart">
+                    <div class="bar my-consumption" style="height: ${myConsumptionHeight}px;">
+                        <span class="bar-label">${formatNumber(somaWasserverbrauch.toString())} m³</span>
+                    </div>
+                    <div class="bar average" style="height: ${averageHeight}px;">
+                        <span class="bar-label">46,300 m³</span>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #3498db;"></span> Meu Consumo
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #28a745;"></span> Média de Gasto para 1 Pessoa
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("popup-content").innerHTML = content;
+
+            const overlay = document.getElementById("popup-overlay");
+            const popup = document.getElementById("estatistica-popup");
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                popup.classList.add("visible");
+            }, 10);
+        }
+
+        function fecharPopup() {
+            const overlay = document.getElementById("popup-overlay");
+            const popup = document.getElementById("estatistica-popup");
+            popup.classList.add("fade-out");
+            setTimeout(() => {
+                popup.classList.remove("visible", "fade-out");
+                overlay.style.display = 'none';
+                document.getElementById("popup-content").innerHTML = '';
+            }, 300);
+        }
+
+        function calcularCusto() {
+            const valorWarmeNeu = parseFormattedNumber(warmemengenzahlerNeu.value);
+            const valorWarmeAlt = parseFormattedNumber(warmemengenzahlerAlt.value);
+            const valorWasserNeu = parseFormattedNumber(warmwasserVerbrauchNeu.value);
+            const valorWasserAlt = parseFormattedNumber(warmwasserVerbrauchAlt.value);
+            const valorKaltNeu = parseFormattedNumber(kaltwasserVerbrauchNeu.value);
+            const valorKaltAlt = parseFormattedNumber(kaltwasserVerbrauchAlt.value);
+            const valorBetriebskosten = parseFormattedNumber(betriebskostenVorauszahlungsbetrag.value);
+
+            inputs.forEach(input => input.classList.remove('error'));
+
+            const errors = [];
+            if (valorWarmeAlt > valorWarmeNeu) {
+                errors.push("Wärmemengenzähler");
+                warmemengenzahlerNeu.classList.add('error');
+                warmemengenzahlerAlt.classList.add('error');
+            }
+            if (valorWasserAlt > valorWasserNeu) {
+                errors.push("Warmwasser Verbrauch");
+                warmwasserVerbrauchNeu.classList.add('error');
+                warmwasserVerbrauchAlt.classList.add('error');
+            }
+            if (valorKaltAlt > valorKaltNeu) {
+                errors.push("Kaltwasser Verbrauch");
+                kaltwasserVerbrauchNeu.classList.add('error');
+                kaltwasserVerbrauchAlt.classList.add('error');
+            }
+
+            resultadoDiv.innerHTML = '';
+            if (errors.length > 0) {
+                const errorMessage = `Os valores antigos não podem ser maiores que os valores novos. Verifique os campos: ${errors.join(", ")}.`;
+                resultadoDiv.innerHTML = `<div class="error-message">${errorMessage}</div>`;
+                return;
+            }
+
+            if (isNaN(valorWarmeNeu) || isNaN(valorWarmeAlt) || isNaN(valorWasserNeu) ||
+                isNaN(valorWasserAlt) || isNaN(valorKaltNeu) || isNaN(valorKaltAlt) ||
+                isNaN(valorBetriebskosten)) {
+                alert("Por favor, preencha todos os campos com valores válidos.");
+                return;
+            }
+
+            diferencaWarme = valorWarmeNeu - valorWarmeAlt;
+            let diferencaWasser = valorWasserNeu - valorWasserAlt;
+            let diferencaKalt = valorKaltNeu - valorKaltAlt;
+
+            if (estimativa12Meses.checked) {
+                const hoje = new Date();
+                const startOfYear = new Date(hoje.getFullYear(), 0, 1);
+                const diffInMs = hoje - startOfYear;
+                const daysElapsed = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+                if (daysElapsed === 0) {
+                    alert("Erro: Não é possível calcular a estimativa para 12 meses no primeiro dia do ano.");
+                    return;
+                }
+                const factor = 365 / daysElapsed;
+
+                diferencaWarme = diferencaWarme * factor;
+                diferencaWasser = diferencaWasser * factor;
+                diferencaKalt = diferencaKalt * factor;
+            }
+
+            somaWasserverbrauch = diferencaWasser + diferencaKalt;
+
+            let grundHeizkosten, verbrauchHeizung, totalHeizungskosten;
+            let grundWarmwasserkosten, verbrauchWarmwasser, totalWarmwasserkosten;
+            let wasserversorgung, abwasserkosten, mieteKaltwasserzaehler, abschlagrechnungWasser, schlussrechnungWasser, hausnebenkosten;
+            let summeFestbetraege;
+            let aufzugskosten, gebaeudeversicherung, hausreinigungUndWinterdienst, muellabfuhr, niederschlagswasser;
+            let strassenreinigung, hauslichtAllgemein, wartungRwaAnlage, grundsteuerAllgemein, gesamtgebaeudekosten;
+            let gesamtkosten, jaehrlicherVorauszahlung, resultadoFinal;
+
+            switch (metodoEstimativa.value) {
+                case "media-3-anos":
+                    grundHeizkosten = 1.761 * 43.790;
+                    verbrauchHeizung = 0.1413 * diferencaWarme;
+                    grundWarmwasserkosten = 1.6893 * 43.790;
+                    verbrauchWarmwasser = 13.24991 * diferencaWasser;
+                    wasserversorgung = 2.338175687 * somaWasserverbrauch;
+                    abwasserkosten = 1.636699013 * somaWasserverbrauch;
+                    mieteKaltwasserzaehler = 0.590858167 * diferencaKalt;
+                    abschlagrechnungWasser = 0.165408345 * diferencaKalt;
+                    schlussrechnungWasser = 0.165408345 * diferencaKalt;
+                    aufzugskosten = 314.66;
+                    gebaeudeversicherung = 203.13;
+                    hausreinigungUndWinterdienst = 347.36;
+                    muellabfuhr = 79.77;
+                    niederschlagswasser = 6.73;
+                    strassenreinigung = 32.01;
+                    hauslichtAllgemein = 37.92;
+                    wartungRwaAnlage = 7.64;
+                    grundsteuerAllgemein = 212.37;
+                    break;
+                case "media-2-anos":
+                    grundHeizkosten = 1.746 * 43.790;
+                    verbrauchHeizung = 0.1611 * diferencaWarme;
+                    grundWarmwasserkosten = 1.8633 * 43.790;
+                    verbrauchWarmwasser = 15.29617 * diferencaWasser;
+                    wasserversorgung = 2.436046354 * somaWasserverbrauch;
+                    abwasserkosten = 1.655916393 * somaWasserverbrauch;
+                    mieteKaltwasserzaehler = 0.625727956 * diferencaKalt;
+                    abschlagrechnungWasser = 0.178153876 * diferencaKalt;
+                    schlussrechnungWasser = 0.178153876 * diferencaKalt;
+                    aufzugskosten = 334.74;
+                    gebaeudeversicherung = 204.45;
+                    hausreinigungUndWinterdienst = 334.48;
+                    muellabfuhr = 84.16;
+                    niederschlagswasser = 6.73;
+                    strassenreinigung = 32.77;
+                    hauslichtAllgemein = 40.47;
+                    wartungRwaAnlage = 4.01;
+                    grundsteuerAllgemein = 212.37;
+                    break;
+                case "maximo-3-anos":
+                    grundHeizkosten = 1.939 * 43.790;
+                    verbrauchHeizung = 0.172883 * diferencaWarme;
+                    grundWarmwasserkosten = 2.001882 * 43.790;
+                    verbrauchWarmwasser = 17.503302 * diferencaWasser;
+                    wasserversorgung = 2.49263 * somaWasserverbrauch;
+                    abwasserkosten = 1.700904 * somaWasserverbrauch;
+                    mieteKaltwasserzaehler = 0.625789 * diferencaKalt;
+                    abschlagrechnungWasser = 0.182516 * diferencaKalt;
+                    schlussrechnungWasser = 0.182516 * diferencaKalt;
+                    aufzugskosten = 349.67;
+                    gebaeudeversicherung = 218.48;
+                    hausreinigungUndWinterdienst = 373.12;
+                    muellabfuhr = 84.16;
+                    niederschlagswasser = 6.73;
+                    strassenreinigung = 35.06;
+                    hauslichtAllgemein = 42.78;
+                    wartungRwaAnlage = 14.90;
+                    grundsteuerAllgemein = 212.37;
+                    break;
+                case "mesmo-ano-anterior":
+                    grundHeizkosten = 1.939 * 43.790;
+                    verbrauchHeizung = 0.172883 * diferencaWarme;
+                    grundWarmwasserkosten = 2.001882 * 43.790;
+                    verbrauchWarmwasser = 17.503302 * diferencaWasser;
+                    wasserversorgung = 2.379463 * somaWasserverbrauch;
+                    abwasserkosten = 1.610929 * somaWasserverbrauch;
+                    mieteKaltwasserzaehler = 0.625789 * diferencaKalt;
+                    abschlagrechnungWasser = 0.182516 * diferencaKalt;
+                    schlussrechnungWasser = 0.182516 * diferencaKalt;
+                    aufzugskosten = 349.67;
+                    gebaeudeversicherung = 218.48;
+                    hausreinigungUndWinterdienst = 331.68;
+                    muellabfuhr = 84.16;
+                    niederschlagswasser = 6.73;
+                    strassenreinigung = 35.06;
+                    hauslichtAllgemein = 42.78;
+                    wartungRwaAnlage = 4.01;
+                    grundsteuerAllgemein = 212.37;
+                    break;
+                default:
+                    grundHeizkosten = 0;
+                    verbrauchHeizung = 0;
+                    grundWarmwasserkosten = 0;
+                    verbrauchWarmwasser = 0;
+                    wasserversorgung = 0;
+                    abwasserkosten = 0;
+                    mieteKaltwasserzaehler = 0;
+                    abschlagrechnungWasser = 0;
+                    schlussrechnungWasser = 0;
+                    aufzugskosten = 0;
+                    gebaeudeversicherung = 0;
+                    hausreinigungUndWinterdienst = 0;
+                    muellabfuhr = 0;
+                    niederschlagswasser = 0;
+                    strassenreinigung = 0;
+                    hauslichtAllgemein = 0;
+                    wartungRwaAnlage = 0;
+                    grundsteuerAllgemein = 0;
+            }
+
+            totalHeizungskosten = grundHeizkosten + verbrauchHeizung;
+            totalWarmwasserkosten = grundWarmwasserkosten + verbrauchWarmwasser;
+            hausnebenkosten = wasserversorgung + abwasserkosten + mieteKaltwasserzaehler + abschlagrechnungWasser + schlussrechnungWasser;
+            summeFestbetraege = hausnebenkosten + totalWarmwasserkosten + totalHeizungskosten;
+            gesamtgebaeudekosten = aufzugskosten + gebaeudeversicherung + hausreinigungUndWinterdienst + muellabfuhr + 
+                                   niederschlagswasser + strassenreinigung + hauslichtAllgemein + wartungRwaAnlage + grundsteuerAllgemein;
+            gesamtkosten = gesamtgebaeudekosten + summeFestbetraege;
+            jaehrlicherVorauszahlung = valorBetriebskosten * 12;
+            resultadoFinal = jaehrlicherVorauszahlung - gesamtkosten;
+
+            const warmemengenAccordion = `
+                <div class="accordion visible">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span class="header-label">Gesamt Wärmemangen:</span>
+                        <span class="header-value">${formatNumber(diferencaWarme.toString())} kWh </span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>
+                            <span class="content-label">Wärmemengenzähler:</span>
+                            <span class="content-value">${formatNumber(diferencaWarme.toString())} kWh</span>
+                        </p>
+                    </div>
+                </div>
+            `;
+            const wasserverbrauchAccordion = `
+                <div class="accordion visible">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span class="header-label">Gesamtsumme Wasserverbrauch:</span>
+                        <span class="header-value">${formatNumber(somaWasserverbrauch.toString())} m³ </span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>
+                            <span class="content-label">Kaltwasser Verbrauch:</span>
+                            <span class="content-value">${formatNumber(diferencaKalt.toString())} m³ </span>
+                        </p>
+                        <p>
+                            <span class="content-label">Warmwasser Verbrauch:</span>
+                            <span class="content-value">${formatNumber(diferencaWasser.toString())} m³ </span>
+                        </p>
+                    </div>
+                </div>
+            `;
+            const gesamtkostenAccordion = `
+                <div class="accordion visible">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span class="header-label">Gesamtkosten:</span>
+                        <span class="header-value">${formatNumber(gesamtkosten.toString(), true)} € </span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="nested-accordion">
+                            <div class="nested-accordion-header" onclick="toggleNestedAccordion(this)">
+                                <span class="header-label">Gesamtgebäudekosten:</span>
+                                <span class="header-value">${formatNumber(gesamtgebaeudekosten.toString(), true)} € </span>
+                            </div>
+                            <div class="nested-accordion-content">
+                                <p>
+                                    <span class="content-label">Aufzugskosten:</span>
+                                    <span class="content-value">${formatNumber(aufzugskosten.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Gebäudeversicherung:</span>
+                                    <span class="content-value">${formatNumber(gebaeudeversicherung.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Hausreinigung und Winterdienst:</span>
+                                    <span class="content-value">${formatNumber(hausreinigungUndWinterdienst.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Müllabfuhr:</span>
+                                    <span class="content-value">${formatNumber(muellabfuhr.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Niederschlagswasser:</span>
+                                    <span class="content-value">${formatNumber(niederschlagswasser.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Strassenreinigung:</span>
+                                    <span class="content-value">${formatNumber(strassenreinigung.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Hauslicht allgemein:</span>
+                                    <span class="content-value">${formatNumber(hauslichtAllgemein.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Wartung RWA-Anlage:</span>
+                                    <span class="content-value">${formatNumber(wartungRwaAnlage.toString(), true)} € </span>
+                                </p>
+                                <p>
+                                    <span class="content-label">Grundsteuer allgemein:</span>
+                                    <span class="content-value">${formatNumber(grundsteuerAllgemein.toString(), true)} € </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="nested-accordion">
+                            <div class="nested-accordion-header" onclick="toggleNestedAccordion(this)">
+                                <span class="header-label">Summe Festbeträge:</span>
+                                <span class="header-value">${formatNumber(summeFestbetraege.toString(), true)} € </span>
+                            </div>
+                            <div class="nested-accordion-content">
+                                <div class="sub-nested-accordion">
+                                    <div class="sub-nested-accordion-header" onclick="toggleSubNestedAccordion(this)">
+                                        <span class="header-label">Hausnebenkosten:</span>
+                                        <span class="header-value">${formatNumber(hausnebenkosten.toString(), true)} € </span>
+                                    </div>
+                                    <div class="sub-nested-accordion-content">
+                                        <p>
+                                            <span class="content-label">Wasserversorgung:</span>
+                                            <span class="content-value">${formatNumber(wasserversorgung.toString(), true)} € </span>
+                                        </p>
+                                        <p>
+                                            <span class="content-label">Abwasserkosten:</span>
+                                            <span class="content-value">${formatNumber(abwasserkosten.toString(), true)} € </span>
+                                        </p>
+                                        <p>
+                                            <span class="content-label">Miete Kaltwasserzähler:</span>
+                                            <span class="content-value">${formatNumber(mieteKaltwasserzaehler.toString(), true)} € </span>
+                                        </p>
+                                        <p>
+                                            <span class="content-label">Abschlagrechnung Wasser:</span>
+                                            <span class="content-value">${formatNumber(abschlagrechnungWasser.toString(), true)} € </span>
+                                        </p>
+                                        <p>
+                                            <span class="content-label">Schlussrechnung Wasser:</span>
+                                            <span class="content-value">${formatNumber(schlussrechnungWasser.toString(), true)} € </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="sub-nested-accordion">
+                                    <div class="sub-nested-accordion-header" onclick="toggleSubNestedAccordion(this)">
+                                        <span class="header-label">Total Warmwasserkosten:</span>
+                                        <span class="header-value">${formatNumber(totalWarmwasserkosten.toString(), true)} € </span>
+                                    </div>
+                                    <div class="sub-nested-accordion-content">
+                                        <p>
+                                            <span class="content-label">Grund Warmwasserkosten:</span>
+                                            <span class="content-value">${formatNumber(grundWarmwasserkosten.toString(), true)} € </span>
+                                        </p>
+                                        <p>
+                                            <span class="content-label">Verbrauch Warmwasser:</span>
+                                            <span class="content-value">${formatNumber(verbrauchWarmwasser.toString(), true)} € </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="sub-nested-accordion">
+                                    <div class="sub-nested-accordion-header" onclick="toggleSubNestedAccordion(this)">
+                                        <span class="header-label">Total Heizungskosten:</span>
+                                        <span class="header-value">${formatNumber(totalHeizungskosten.toString(), true)} € </span>
+                                    </div>
+                                    <div class="sub-nested-accordion-content">
+                                        <p>
+                                            <span class="content-label">Grund Heizkosten:</span>
+                                            <span class="content-value">${formatNumber(grundHeizkosten.toString(), true)} € </span>
+                                        </p>
+                                        <p>
+                                            <span class="content-label">Verbrauch Heizung:</span>
+                                            <span class="content-value">${formatNumber(verbrauchHeizung.toString(), true)} € </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            const jaehrlicherVorauszahlungAccordion = `
+                <div class="accordion visible">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span class="header-label">Jährlicher Vorauszahlung:</span>
+                        <span class="header-value">${formatNumber(jaehrlicherVorauszahlung.toString(), true)} € </span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>
+                            <span class="content-label">Gesamtvorauszahlung:</span>
+                            <span class="content-value">${formatNumber(jaehrlicherVorauszahlung.toString(), true)} € </span>
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            let mensagemResultadoFinal = '';
+            let resultadoClass = '';
+            if (resultadoFinal >= 0) {
+                mensagemResultadoFinal = `Ihr Guthaben ist: ${formatNumber(resultadoFinal.toString(), true)}`;
+                resultadoClass = 'positive';
+            } else {
+                mensagemResultadoFinal = `Ihre Nachzahlung ist: ${formatNumber(Math.abs(resultadoFinal).toString(), true)}`;
+                resultadoClass = 'negative';
+            }
+            const resultadoFinalDiv = `
+                <div class="resultado-final ${resultadoClass}">${mensagemResultadoFinal}</div>
+            `;
+
+            resultadoDiv.innerHTML = warmemengenAccordion + wasserverbrauchAccordion + gesamtkostenAccordion + jaehrlicherVorauszahlungAccordion + resultadoFinalDiv;
+        }
+
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            content.classList.toggle("open");
+        }
+
+        function toggleNestedAccordion(header) {
+            const content = header.nextElementSibling;
+            content.classList.toggle("open");
+        }
+
+        function toggleSubNestedAccordion(header) {
+            const content = header.nextElementSibling;
+            content.classList.toggle("open");
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const toggle = document.querySelector(".theme-toggle");
+            const slider = document.querySelector(".slider");
+
+            body.classList.toggle("dark-mode");
+            toggle.classList.toggle("dark-mode");
+
+            if (body.classList.contains("dark-mode")) {
+                slider.textContent = "🌙";
+            } else {
+                slider.textContent = "☀️";
+            }
+        }
+    </script>
+</body>
+</html>
